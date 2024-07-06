@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import uploadImg from '../assets/upload.png'
 import {ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { addProjectAPI } from '../services/allAPI'
+import { addResponseContext } from '../contexts/ContextAPI'
 
 const Add = () => {
+  const {addResponse,setAddResponse} = useContext(addResponseContext)
   const [preview,setPreview] = useState(uploadImg)
-  const [imageFileStatus, setImageFileStatus] =useState(false)
+  const [imageFileStatus, setImageFileStatus] = useState(false)
     const [projectDetails,setProjectDetails] = useState({
       title:"",languages:"",github:"",website:"",overview:"",projectImg:""
     })
     const [show, setShow] = useState(false);
 
-    console.log(projectDetails);
+    //console.log(projectDetails);
     const handleClose = () => {
       setShow(false);
     setProjectDetails({
@@ -36,7 +38,6 @@ const Add = () => {
     const handleAddProject = async ()=>{
       const {title,languages,github,website,overview,projectImg} = projectDetails
       if(projectDetails.title && projectDetails.languages && projectDetails.github && projectDetails.website && projectDetails.overview && projectDetails.projectImg){
-        //api call reqbody, reqheader
         //reqbody - add items to form data
         const reqBody = new FormData()
         reqBody.append("title",title)
@@ -55,10 +56,11 @@ const Add = () => {
           //api call - reqbody, reqheader
           try{
             const result = await addProjectAPI(reqBody,reqHeader)
-            console.log(result);
+           // console.log(result);
             if(result.status==200){
               handleClose()
-              toast.success("Project added successfully")
+              //toast.success("Project added successfully")
+              setAddResponse(result)
             }else{
               toast.warning(result.response.data)
           }

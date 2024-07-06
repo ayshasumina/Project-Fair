@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import loginImg from '../assets/login.png'
 import { Form,FloatingLabel, Spinner  } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import {ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { loginAPI, registerAPI } from '../services/allAPI'
+import { tokenAuthContext } from '../contexts/AuthContext'
 
 const Auth = ({insideRegister}) => {
+    const {isAuthorised,setIsAuthorised} = useContext(tokenAuthContext)
     const [isLoggedin,setIsLoggedin] = useState(false)
     const navigate = useNavigate()
     const[userData, setUserData] = useState({
@@ -47,11 +49,12 @@ const Auth = ({insideRegister}) => {
             //api call
           try{
             const result = await loginAPI(userData)
-            console.log(result);
+            //console.log(result);
             if(result.status==200){
                 setIsLoggedin(true)
                 sessionStorage.setItem("user",JSON.stringify(result.data.user))
-                sessionStorage.setItem("token",result.data.token)              
+                sessionStorage.setItem("token",result.data.token)   
+                setIsAuthorised(true)          
                 setTimeout(() => {
                    // toast.warning(`Welcome ${result.data.user.username}...`)
                     setUserData({
@@ -72,6 +75,7 @@ const Auth = ({insideRegister}) => {
             toast.info("Please fill the form completely!!!")
         }
     }
+    
     return (
         <div style={{width:'100%',height:'100vh'}} className='d-flex justify-content-center align-items-center'>
             <div className="container w-75">

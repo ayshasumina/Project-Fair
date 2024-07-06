@@ -1,3 +1,3 @@
-const SERVERURL = "http://localhost:3000"
+const SERVERURL = "https://pf-server-hz7u.onrender.com"
 
 export default SERVERURL
